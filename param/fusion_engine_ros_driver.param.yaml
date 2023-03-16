@@ -1,0 +1,5 @@
+
+/**:
+  ros__parameters:
+    frame_id: "gps"
+    capacity_bytes: 1024

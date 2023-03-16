@@ -58,7 +58,7 @@ if(BUILD_TESTING)
   ament_clang_format(src/ include/ --config ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format)
 endif()
 
-# ament_auto_package(INSTALL_TO_SHARE
-#   launch
-#   param
-# )
+ament_auto_package(INSTALL_TO_SHARE
+  launch
+  param
+)
