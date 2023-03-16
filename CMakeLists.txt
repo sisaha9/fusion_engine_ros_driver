@@ -45,7 +45,7 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
 )
 
 # Register this project as a component node.
-set(${PROJECT_NAME}_NODE_PLUGIN_CLASS "pointone::fusion_engine::ros::FusionEngineRosDriverNode")
+set(${PROJECT_NAME}_NODE_PLUGIN_CLASS "point_one::fusion_engine::ros_driver::FusionEngineRosDriverNode")
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN ${${PROJECT_NAME}_NODE_PLUGIN_CLASS}
   EXECUTABLE ${PROJECT_NAME}_node_exe)
