@@ -50,7 +50,8 @@ rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN ${${PROJECT_NAME}_NODE_PLUGIN_CLASS}
   EXECUTABLE ${PROJECT_NAME}_node_exe)
 
-# Link node to fusion_engine_client library.
+# Link to fusion_engine_client library.
+target_link_libraries(${PROJECT_NAME} fusion_engine_client)
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
 
 if(BUILD_TESTING)
