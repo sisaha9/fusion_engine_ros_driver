@@ -5,9 +5,6 @@
 
 #include "fusion_engine_ros_driver/fusion_engine_ros_driver_utils.hpp"
 
-#include "GeographicLib/Geocentric.hpp"
-#include "GeographicLib/LocalCartesian.hpp"
-
 namespace point_one {
 namespace fusion_engine {
 namespace ros_utils {
