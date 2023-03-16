@@ -6,6 +6,8 @@
 #ifndef FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
 #define FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
 
+#include <string>
+
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "nav_msgs/msg/odometry.hpp"
@@ -77,39 +79,6 @@ class FusionEngineRosDriverNode : public rclcpp::Node {
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_publisher_;
 
   /**
-   * @brief ROS 2 UDP Subscriber
-   * 
-   * This is where UDP packets will come in
-   */
-  rclcpp::Subscription<udp_msgs::msg::UdpPacket>::SharedPtr udp_subscriber_;
-
-  /**
-   * @brief ROS 2 Uint8 Array Subscriber
-   * 
-   * This is where Serial packets will come in
-   */
-  rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr
-      serial_subscriber_;
-
-  /**
-   * @brief Function called when Udp message comes in over ROS 2
-   * 
-   * Sends the data to the FusionEngineFramer
-   * 
-   * @param udp_msg The UDP message that came
-   */
-  void UdpCallback(const udp_msgs::msg::UdpPacket::SharedPtr udp_msg);
-  /**
-   * @brief Function called when Serial message comes in over ROS 2
-   * 
-   * Sends the data to the FusionEngineFramer
-   * 
-   * @param udp_msg The Serial message that came
-   */
-  void SerialCallback(
-      const std_msgs::msg::UInt8MultiArray::SharedPtr serial_msg);
-
-  /**
    * @brief Function called by FusionEngineFramer
    * 
    * This function publishes the ROS 2 messages based off the header of the
@@ -132,6 +101,28 @@ class FusionEngineRosDriverNode : public rclcpp::Node {
    * 
    */
   std::string frame_id_{""};
+  
+  /**
+   * @brief How we are connecting to a Fusion Engine Device
+   * 
+   * Can take values of  and serial
+  */
+  std::string connection_type_{"none"};
+
+  /**
+   * @brief IP address of UDP or TCP connection
+  */
+  std::string ip_addr_{"none"};
+
+  /**
+   * @brief Port we are communicating over in IP address
+  */
+  int ip_port_{0};
+
+  /**
+   * @brief Port we are communicating over on serial
+  */
+  std::string serial_port_{"none"};
 
   /**
    * @brief Pointer to Fusion Engine Framer object
