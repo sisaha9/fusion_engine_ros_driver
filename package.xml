@@ -23,6 +23,7 @@
   <exec_depend>udp_driver</exec_depend>
   <exec_depend>serial_driver</exec_depend>
 
+  <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_cmake_clang_format</test_depend>
 
   <export>

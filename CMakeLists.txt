@@ -57,10 +57,8 @@ rclcpp_components_register_node(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
 
 if(BUILD_TESTING)
-  find_package(ament_cmake_clang_format REQUIRED)
-  ament_clang_format(
-   CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-format
-  )
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
 endif()
 
 ament_auto_package(INSTALL_TO_SHARE
