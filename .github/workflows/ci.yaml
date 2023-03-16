@@ -33,8 +33,8 @@ jobs:
       - name: Build Workspace
         run: |
           bash -c 'source /opt/ros/${{ matrix.ros_distro }}/setup.bash; \
-          make'
+          make build-ci'
       - name: Run Tests
         run: |
           bash -c 'source /opt/ros/${{ matrix.ros_distro }}/setup.bash; \
-          make test'
+          make test-ci'

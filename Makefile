@@ -12,14 +12,22 @@ clean-test:
 
 .PHONY: build-debug
 build-debug:
-	colcon build --event-handlers console_cohesion+ --cmake-args -DCMAKE_BUILD_TYPE=Debug
+	colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
 
 .PHONY: build
 build:
+	colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+.PHONY: build-ci
+build-ci:
 	colcon build --event-handlers console_cohesion+ --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 .PHONY: test
 test:
+	colcon test; colcon test-result --verbose
+
+.PHONY: test-ci
+test-ci:
 	colcon test --event-handlers console_cohesion+; colcon test-result --verbose
 
 .PHONY: reformat
