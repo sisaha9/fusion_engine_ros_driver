@@ -9,7 +9,7 @@ This is a C++ ROS 2 driver for [Point One Navigation](https://pointonenav.com) [
 1. Install ROS 2: https://docs.ros.org/en/humble/index.html
 2. 
 ```bash
-git clone https://github.com/sisaha9/fusion_engine_client_ros2_driver.git
+git clone https://github.com/sisaha9/fusion_engine_ros_driver.git
 sudo apt update
 sudo apt install python3-rosdep python3-colcon-common-extensions
 sudo rosdep init
