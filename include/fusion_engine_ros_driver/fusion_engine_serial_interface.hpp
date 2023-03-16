@@ -8,7 +8,7 @@
 
 #include <string>
 #include <memory>
-#include "udp_driver/udp_driver.hpp"
+#include "serial_driver/serial_driver.hpp"
 
 namespace point_one
 {
@@ -19,9 +19,18 @@ namespace ros_serial_interface
 class FusionEngineSerialInterface
 {
 public:
-    explicit FusionEngineSerialInterface(std::string & usb_port);
+    explicit FusionEngineSerialInterface(std::string & device_name, std::string & flow_control, std::string & parity, std::string & stop_bits);
+    bool init_port();
+    
+
 private:
-    std::unique_ptr<
+    std::unique_ptr<IoContext> owned_ctx_{};
+    std::string device_name_{};
+    std::string flow_control_{};
+    std::string parity_{};
+    std::string stop_bits_{};
+    std::unique_ptr<drivers::serial_driver::SerialPortConfig> device_config_;
+    std::unique_ptr<drivers::serial_driver::SerialDriver> serial_driver_;
 };
 }
 }
