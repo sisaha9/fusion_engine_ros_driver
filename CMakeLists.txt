@@ -22,11 +22,8 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/PointOneNav/fusion-engine-client.git
     GIT_TAG origin/master
 )
-FetchContent_GetProperties(fusion_engine_client)
-if (NOT fusion_engine_client_POPULATED)
-  FetchContent_Populate(fusion_engine_client)
-  add_subdirectory(${fusion_engine_client_SOURCE_DIR})
-endif()
+FetchContent_Populate(fusion_engine_client)
+add_subdirectory(${fusion_engine_client_SOURCE_DIR})
 
 include_directories(${fusion_engine_client_SOURCE_DIR}/src)
 
@@ -57,8 +54,8 @@ rclcpp_components_register_node(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
+  find_package(ament_cmake_clang_format REQUIRED)
+  ament_clang_format(src/ include/ --config ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format)
 endif()
 
 ament_auto_package(INSTALL_TO_SHARE

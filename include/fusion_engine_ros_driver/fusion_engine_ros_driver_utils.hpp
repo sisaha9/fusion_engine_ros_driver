@@ -14,12 +14,9 @@
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 
-namespace point_one
-{
-namespace fusion_engine
-{
-namespace ros_utils
-{
+namespace point_one {
+namespace fusion_engine {
+namespace ros_utils {
 /**
  * @brief Fills ROS 2 GPSFix message with values from P1 GPSFixMessage struct
  * 
@@ -28,8 +25,8 @@ namespace ros_utils
  * @param gps_fix_msg Pointer to ROS 2 GPS Fix Message. Needs to be filled
  */
 void toGPSFix(
-  const point_one::fusion_engine::messages::ros::GPSFixMessage & contents,
-  gps_msgs::msg::GPSFix::SharedPtr & gps_fix_msg);
+    const point_one::fusion_engine::messages::ros::GPSFixMessage& contents,
+    gps_msgs::msg::GPSFix::SharedPtr& gps_fix_msg);
 
 /**
  * @brief Fills ROS 2 NavSatFix message with values from P1 GPSFixMessage struct
@@ -40,8 +37,8 @@ void toGPSFix(
  * filled
  */
 void toNavSatFix(
-  const point_one::fusion_engine::messages::ros::GPSFixMessage & contents,
-  sensor_msgs::msg::NavSatFix::SharedPtr & nav_sat_fix_msg);
+    const point_one::fusion_engine::messages::ros::GPSFixMessage& contents,
+    sensor_msgs::msg::NavSatFix::SharedPtr& nav_sat_fix_msg);
 
 /**
  * @brief Fills ROS 2 IMU message with values from P1 IMUMessage struct
@@ -49,9 +46,8 @@ void toNavSatFix(
  * @param contents P1 IMUMessage struct matching contents of ROS 2 IMU message
  * @param imu_msg Pointer to ROS 2 IMU message. Needs to be filled
  */
-void toImu(
-  const point_one::fusion_engine::messages::ros::IMUMessage & contents,
-  sensor_msgs::msg::Imu::SharedPtr & imu_msg);
+void toImu(const point_one::fusion_engine::messages::ros::IMUMessage& contents,
+           sensor_msgs::msg::Imu::SharedPtr& imu_msg);
 
 /**
  * @brief Fills ROS 2 Pose message with values from P1 ROS Pose struct
@@ -60,8 +56,8 @@ void toImu(
  * @param pose_msg Pointer to ROS 2 Pose message. Needs to be filled
  */
 void toP1ROSPose(
-  const point_one::fusion_engine::messages::ros::PoseMessage & contents,
-  geometry_msgs::msg::PoseStamped::SharedPtr & pose_msg);
+    const point_one::fusion_engine::messages::ros::PoseMessage& contents,
+    geometry_msgs::msg::PoseStamped::SharedPtr& pose_msg);
 
 /**
  * @brief Feeds a vector of data from FusionEngine server to the
@@ -75,10 +71,11 @@ void toP1ROSPose(
  * fusion_engine_ros_driver_node.cpp and fusion_engine_ros_driver_node.hpp
  */
 void SendDataToFramer(
-  const std::vector<uint8_t> & fusion_engine_server_data,
-  std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> & framer);
-}  // namespace ros_utils
-}  // namespace fusion_engine
-}  // namespace point_one
+    const std::vector<uint8_t>& fusion_engine_server_data,
+    std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer>&
+        framer);
+} // namespace ros_utils
+} // namespace fusion_engine
+} // namespace point_one
 
 #endif

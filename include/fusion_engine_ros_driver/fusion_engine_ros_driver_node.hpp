@@ -17,12 +17,9 @@
 #include "std_msgs/msg/u_int8_multi_array.hpp"
 #include "udp_msgs/msg/udp_packet.hpp"
 
-namespace point_one
-{
-namespace fusion_engine
-{
-namespace ros_driver
-{
+namespace point_one {
+namespace fusion_engine {
+namespace ros_driver {
 /**
  * @brief ROS 2 Node that acts as a Fusion Engine Client and publishes incoming
  * data
@@ -46,18 +43,17 @@ namespace ros_driver
  * Benefits explained here
  * https://docs.ros.org/en/rolling/Concepts/About-Composition.html
  */
-class FusionEngineRosDriverNode : public rclcpp::Node
-{
-public:
+class FusionEngineRosDriverNode : public rclcpp::Node {
+ public:
   /**
    * @brief Construct a new Fusion Engine Ros Driver Node object
    * 
    * @param options Options for the node. Defined here: 
    * https://docs.ros2.org/dashing/api/rclcpp/classrclcpp_1_1NodeOptions.html
    */
-  explicit FusionEngineRosDriverNode(const rclcpp::NodeOptions & options);
+  explicit FusionEngineRosDriverNode(const rclcpp::NodeOptions& options);
 
-private:
+ private:
   /**
    * @brief ROS 2 Pose Publisher
    * 
@@ -72,7 +68,8 @@ private:
    * @brief ROS 2 Nav Sat Fix Publisher
    * 
    */
-  rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr nav_sat_fix_publisher_;
+  rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr
+      nav_sat_fix_publisher_;
   /**
    * @brief ROS 2 IMU Publisher
    * 
@@ -91,7 +88,8 @@ private:
    * 
    * This is where Serial packets will come in
    */
-  rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr serial_subscriber_;
+  rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr
+      serial_subscriber_;
 
   /**
    * @brief Function called when Udp message comes in over ROS 2
@@ -108,7 +106,8 @@ private:
    * 
    * @param udp_msg The Serial message that came
    */
-  void SerialCallback(const std_msgs::msg::UInt8MultiArray::SharedPtr serial_msg);
+  void SerialCallback(
+      const std_msgs::msg::UInt8MultiArray::SharedPtr serial_msg);
 
   /**
    * @brief Function called by FusionEngineFramer
@@ -120,7 +119,8 @@ private:
    * @param payload_in Actual message to be reinterpretted to P1 structs
    */
   void PublishMessage(
-    const point_one::fusion_engine::messages::MessageHeader & header, const void * payload_in);
+      const point_one::fusion_engine::messages::MessageHeader& header,
+      const void* payload_in);
 
   /**
    * @brief Frame ID of ROS 2 messages
@@ -139,7 +139,8 @@ private:
    * Used to deserialize data packets coming in and to call the PublishMessage
    * function
    */
-  std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> framer_;
+  std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer>
+      framer_;
 
   /**
    * @brief The time we received the message
@@ -149,8 +150,8 @@ private:
    */
   rclcpp::Time msg_received_time_;
 };
-}  // namespace ros_driver
-}  // namespace fusion_engine
-}  // namespace point_one
+} // namespace ros_driver
+} // namespace fusion_engine
+} // namespace point_one
 
-#endif  // FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
+#endif // FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_

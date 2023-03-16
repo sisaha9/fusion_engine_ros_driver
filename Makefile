@@ -24,7 +24,8 @@ test:
 
 .PHONY: reformat
 reformat:
-	ament_clang_format --reformat
+	ament_clang_format --config .clang-format --reformat src/
+	ament_clang_format --config .clang-format --reformat include/
 
 .PHONY: rosdep-install
 rosdep-install:
