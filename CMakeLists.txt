@@ -1,13 +1,34 @@
-cmake_minimum_required(VERSION 3.8)
-project(fusion_engine_ros_driver)
+cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(P1_FE_BUILD_EXAMPLES OFF)
+
+project(fusion_engine_ros_driver)
+
 include(FetchContent)
+
+# Default to C++17
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
+
+# Specify external project as a target.
+FetchContent_Declare(
+    fusion_engine_client
+    GIT_REPOSITORY https://github.com/PointOneNav/fusion-engine-client.git
+    GIT_TAG origin/master
+)
+FetchContent_GetProperties(fusion_engine_client)
+if (NOT fusion_engine_client_POPULATED)
+  FetchContent_Populate(fusion_engine_client)
+  add_subdirectory(${fusion_engine_client_SOURCE_DIR})
+endif()
+
+include_directories(${fusion_engine_client_SOURCE_DIR}/src)
 
 # find dependencies
 find_package(ament_cmake_auto REQUIRED)
@@ -18,6 +39,7 @@ ament_auto_find_build_dependencies(REQUIRED
 
 set(${PROJECT_NAME}_SRC
   src/fusion_engine_ros_driver_node.cpp
+  src/fusion_engine_ros_driver_utils.cpp
 )
 
 # Create this project as a library.
@@ -30,15 +52,6 @@ set(${PROJECT_NAME}_NODE_PLUGIN_CLASS "pointone::fusion_engine::ros::FusionEngin
 rclcpp_components_register_node(${PROJECT_NAME}
   PLUGIN ${${PROJECT_NAME}_NODE_PLUGIN_CLASS}
   EXECUTABLE ${PROJECT_NAME}_node_exe)
-
-# Specify external project as a target.
-FetchContent_Declare(
-    fusion_engine_client
-    GIT_REPOSITORY https://github.com/PointOneNav/fusion-engine-client.git
-    GIT_TAG origin/master
-)
-FetchContent_Populate(fusion_engine_client)
-add_subdirectory(${fusion_engine_client_SOURCE_DIR})
 
 # Link node to fusion_engine_client library.
 target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)

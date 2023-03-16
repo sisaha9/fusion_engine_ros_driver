@@ -12,18 +12,19 @@
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "sensor_msgs/msg/imu.hpp"
+#include "nav_msgs/msg/odometry.hpp"
 
 #include "std_msgs/msg/u_int8_multi_array.hpp"
 #include "udp_msgs/msg/udp_packet.hpp"
 
-// #include "fusion_engine_ros_driver/fusion_engine/parsers/fusion_engine_framer.h"
-// #include "fusion_engine_ros_driver/fusion_engine/messages/core.h"
+#include "point_one/fusion_engine/messages/core.h"
+#include "point_one/fusion_engine/parsers/fusion_engine_framer.h"
 
-namespace pointone
+namespace point_one
 {
 namespace fusion_engine
 {
-namespace ros
+namespace ros_driver
 {
 class FusionEngineRosDriverNode : public rclcpp::Node
 {
@@ -40,15 +41,17 @@ private:
 
     void UdpCallback(const udp_msgs::msg::UdpPacket::SharedPtr udp_msg);
     void SerialCallback(const std_msgs::msg::UInt8MultiArray::SharedPtr serial_msg);
-    // void PublishMessage(const fusion_engine::messages::MessageHeader& header, const void* payload);
+    void PublishMessage(const point_one::fusion_engine::messages::MessageHeader& header, const void* payload_in);
 
-    std::string connection_type_;
-    std::string frame_id_;
+    std::string connection_type_{""};
+    std::string frame_id_{""};
 
-    // std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> framer_;
+    std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> framer_;
+
+    rclcpp::Time msg_received_time_;
 };
-}  // namespace ros
+}  // namespace ros_driver
 }  // namespace fusion_engine
-}  // namespace pointone
+}  // namespace point_one
 
 #endif  // FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
