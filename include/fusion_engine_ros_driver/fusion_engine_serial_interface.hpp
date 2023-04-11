@@ -8,7 +8,10 @@
 
 #include <string>
 #include <memory>
+
+#include "point_one/fusion_engine/parsers/fusion_engine_framer.h"
 #include "serial_driver/serial_driver.hpp"
+#include "rclcpp/logger.hpp"
 
 namespace point_one
 {
@@ -16,21 +19,30 @@ namespace fusion_engine
 {
 namespace ros_serial_interface
 {
+
+#define NUM_THREADS 2
 class FusionEngineSerialInterface
 {
 public:
-    explicit FusionEngineSerialInterface(std::string & device_name, std::string & flow_control, std::string & parity, std::string & stop_bits);
-    bool init_port();
-    
+    explicit FusionEngineSerialInterface(const std::shared_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> framer, const rclcpp::Logger & logger, std::string & device_name, const std::string & flow_control, const std::string & parity, const std::string & stop_bits, const uint32_t baud_rate);
+    ~FusionEngineSerialInterface();
 
 private:
-    std::unique_ptr<IoContext> owned_ctx_{};
+    bool InitPort(const std::string & device_name);
+    void InitDeviceConfig(const std::string & flow_control, const std::string & parity, const std::string & stop_bits, const uint32_t baud_rate);
+    void SerialCallback(const std::vector<uint8_t> & buffer, const size_t & bytes_transferred);
+    uint32_t baud_rate_;
+
+    std::unique_ptr<drivers::common::IoContext> owned_ctx_{};
     std::string device_name_{};
-    std::string flow_control_{};
-    std::string parity_{};
-    std::string stop_bits_{};
+    drivers::serial_driver::FlowControl flow_control_{drivers::serial_driver::FlowControl::NONE};
+    drivers::serial_driver::Parity parity_{drivers::serial_driver::Parity::NONE};
+    drivers::serial_driver::StopBits stop_bits_{drivers::serial_driver::StopBits::ONE};
     std::unique_ptr<drivers::serial_driver::SerialPortConfig> device_config_;
     std::unique_ptr<drivers::serial_driver::SerialDriver> serial_driver_;
+    std::shared_ptr<point_one::fusion_engine::parsers::FusionEngineFramer> framer_;
+
+    rclcpp::Logger logger_;
 };
 }
 }

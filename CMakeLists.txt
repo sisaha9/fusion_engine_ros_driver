@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-set(P1_FE_BUILD_EXAMPLES OFF)
 
 project(fusion_engine_ros_driver)
 
@@ -23,9 +22,23 @@ FetchContent_Declare(
     GIT_TAG origin/master
 )
 FetchContent_Populate(fusion_engine_client)
-add_subdirectory(${fusion_engine_client_SOURCE_DIR})
+set(P1_FE_BUILD_EXAMPLES OFF)
+add_subdirectory(${fusion_engine_client_SOURCE_DIR} ${fusion_engine_client_BINARY_DIR})
 
 include_directories(${fusion_engine_client_SOURCE_DIR}/src)
+
+FetchContent_Declare(
+    p1_polaris_client
+    GIT_REPOSITORY https://github.com/sisaha9/polaris
+    GIT_TAG origin/sid/type_diff
+)
+FetchContent_Populate(p1_polaris_client)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${p1_polaris_client_SOURCE_DIR}/cmake)
+set(BUILD_SHARED_LIBS ON)
+set(BUILD_EXAMPLES OFF)
+add_subdirectory(${p1_polaris_client_SOURCE_DIR} ${p1_polaris_client_BINARY_DIR})
+
+include_directories(${p1_polaris_client_SOURCE_DIR}/src)
 
 # find dependencies
 find_package(ament_cmake_auto REQUIRED)
@@ -37,6 +50,7 @@ ament_auto_find_build_dependencies(REQUIRED
 set(${PROJECT_NAME}_SRC
   src/fusion_engine_ros_driver_node.cpp
   src/fusion_engine_ros_driver_utils.cpp
+  src/fusion_engine_serial_interface.cpp
 )
 
 # Create this project as a library.
@@ -51,7 +65,8 @@ rclcpp_components_register_node(${PROJECT_NAME}
   EXECUTABLE ${PROJECT_NAME}_node_exe)
 
 # Link node to fusion_engine_client library.
-target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client)
+target_link_libraries(${PROJECT_NAME} fusion_engine_client polaris_cpp_client)
+target_link_libraries(${PROJECT_NAME}_node_exe fusion_engine_client polaris_cpp_client)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_clang_format REQUIRED)

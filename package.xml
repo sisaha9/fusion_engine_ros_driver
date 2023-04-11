@@ -17,6 +17,10 @@
   <depend>nav_msgs</depend>
   <depend>std_msgs</depend>
   <depend>udp_msgs</depend>
+  <depend>libssl-dev</depend>
+  <depend>libgflags-dev</depend>
+  <depend>libgoogle-glog-dev</depend>
+  <depend>libboost-dev</depend>
 
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>

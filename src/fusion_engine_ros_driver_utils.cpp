@@ -1,6 +1,7 @@
 //  Copyright 2023 Siddharth Saha
 /**
- * @brief Source file containing implementation of functions in Fusion Engine ROS Driver utils header file
+ * @brief Source file containing implementation of functions in Fusion Engine
+ * ROS Driver utils header file
 */
 
 #include "fusion_engine_ros_driver/fusion_engine_ros_driver_utils.hpp"

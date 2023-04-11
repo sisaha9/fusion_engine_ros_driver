@@ -7,6 +7,7 @@
 #define FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
 
 #include <string>
+#include <memory>
 
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
@@ -117,7 +118,7 @@ class FusionEngineRosDriverNode : public rclcpp::Node {
   /**
    * @brief Port we are communicating over in IP address
   */
-  int ip_port_{0};
+  uint16_t ip_port_{0};
 
   /**
    * @brief Port we are communicating over on serial
@@ -125,12 +126,17 @@ class FusionEngineRosDriverNode : public rclcpp::Node {
   std::string serial_port_{"none"};
 
   /**
+   * @brief Baudrate at which we are communicating with serial device
+   */
+  uint32_t serial_baudrate_{0};
+
+  /**
    * @brief Pointer to Fusion Engine Framer object
    * 
    * Used to deserialize data packets coming in and to call the PublishMessage
    * function
    */
-  std::unique_ptr<point_one::fusion_engine::parsers::FusionEngineFramer>
+  std::shared_ptr<point_one::fusion_engine::parsers::FusionEngineFramer>
       framer_;
 
   /**

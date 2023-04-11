@@ -1,6 +1,7 @@
 //  Copyright 2023 Siddharth Saha
 /**
- * @brief Source file containing implementation of functions in Fusion Engine ROS Driver node header file
+ * @brief Source file containing implementation of functions in Fusion Engine
+ * ROS Driver node header file
 */
 
 #include "fusion_engine_ros_driver/fusion_engine_ros_driver_node.hpp"
@@ -16,16 +17,34 @@ FusionEngineRosDriverNode::FusionEngineRosDriverNode(
     : rclcpp::Node("fusion_engine_ros_driver_node", options) {
   frame_id_ = this->declare_parameter<std::string>("frame_id");
   size_t capacity = this->declare_parameter<int>("capacity_bytes");
-
-  udp_subscriber_ = this->create_subscription<udp_msgs::msg::UdpPacket>(
-      "fusion_engine_udp_packets", rclcpp::QoS{100},
-      std::bind(&FusionEngineRosDriverNode::UdpCallback, this,
-                std::placeholders::_1));
-  serial_subscriber_ =
-      this->create_subscription<std_msgs::msg::UInt8MultiArray>(
-          "fusion_engine_serial_packets", rclcpp::QoS{100},
-          std::bind(&FusionEngineRosDriverNode::SerialCallback, this,
-                    std::placeholders::_1));
+  connection_type_ = this->declare_parameter<std::string>("connection_type");
+  framer_ =
+      std::make_shared<point_one::fusion_engine::parsers::FusionEngineFramer>(
+          capacity);
+  framer_->SetMessageCallback(
+      std::bind(&FusionEngineRosDriverNode::PublishMessage, this,
+                std::placeholders::_1, std::placeholders::_2));
+  if (connection_type_ == "serial") {
+    serial_port_ = this->declare_parameter<std::string>("serial.port");
+    auto baudrate = this->declare_parameter<int>("serial.baudrate");
+    if (baudrate <= 0) {
+      throw std::runtime_error("Baud rate has to be positive");
+    }
+    serial_baudrate_ = static_cast<uint32_t>(baudrate);
+  } else if (connection_type_ == "udp") {
+    RCLCPP_ERROR(this->get_logger(), "Unsupported for now connection type: %s", connection_type_.c_str());
+    throw std::runtime_error("Unsupported for now connection type");
+    ip_addr_ = this->declare_parameter<std::string>("udp.ip");
+    ip_port_ = this->declare_parameter<uint16_t>("udp.port");
+  } else if (connection_type_ == "tcp") {
+    RCLCPP_ERROR(this->get_logger(), "Unsupported for now connection type: %s", connection_type_.c_str());
+    throw std::runtime_error("Unsupported for now connection type");
+    ip_addr_ = this->declare_parameter<std::string>("tcp.ip");
+    ip_port_ = this->declare_parameter<uint16_t>("tcp.port");
+  } else {
+    RCLCPP_ERROR(this->get_logger(), "Unsupported connection type: %s", connection_type_.c_str());
+    throw std::runtime_error("Unsupported connection type");
+  }
 
   pose_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
       "pose", rclcpp::SensorDataQoS());
@@ -35,29 +54,6 @@ FusionEngineRosDriverNode::FusionEngineRosDriverNode(
       "nav_sat_fix", rclcpp::SensorDataQoS());
   imu_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>(
       "imu", rclcpp::SensorDataQoS());
-
-  framer_ =
-      std::make_unique<point_one::fusion_engine::parsers::FusionEngineFramer>(
-          capacity);
-  framer_->SetMessageCallback(
-      std::bind(&FusionEngineRosDriverNode::PublishMessage, this,
-                std::placeholders::_1, std::placeholders::_2));
-}
-
-/******************************************************************************/
-void FusionEngineRosDriverNode::UdpCallback(
-    const udp_msgs::msg::UdpPacket::SharedPtr udp_msg) {
-  auto udp_data = udp_msg->data;
-  msg_received_time_ = this->now();
-  point_one::fusion_engine::ros_utils::SendDataToFramer(udp_data, framer_);
-}
-
-/******************************************************************************/
-void FusionEngineRosDriverNode::SerialCallback(
-    const std_msgs::msg::UInt8MultiArray::SharedPtr serial_msg) {
-  auto serial_data = serial_msg->data;
-  msg_received_time_ = this->now();
-  point_one::fusion_engine::ros_utils::SendDataToFramer(serial_data, framer_);
 }
 
 /******************************************************************************/
