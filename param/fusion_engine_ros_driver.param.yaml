@@ -3,6 +3,7 @@
   ros__parameters:
     frame_id: "gps"
     capacity_bytes: 1024
+    connection_type: "serial"
     serial:
       device_name: "/dev/ttyUSB1"
       baud_rate: 460800

@@ -25,25 +25,40 @@ FusionEngineRosDriverNode::FusionEngineRosDriverNode(
       std::bind(&FusionEngineRosDriverNode::PublishMessage, this,
                 std::placeholders::_1, std::placeholders::_2));
   if (connection_type_ == "serial") {
-    serial_port_ = this->declare_parameter<std::string>("serial.port");
+    std::string serial_port =
+        this->declare_parameter<std::string>("serial.port");
     auto baudrate = this->declare_parameter<int>("serial.baudrate");
     if (baudrate <= 0) {
-      throw std::runtime_error("Baud rate has to be positive");
+      RCLCPP_FATAL(this->get_logger(), "Baud rate has to be positive");
+      throw std::runtime_error("");
     }
-    serial_baudrate_ = static_cast<uint32_t>(baudrate);
+    if (baudrate > std::numeric_limits<uint32_t>::max()) {
+      RCLCPP_FATAL(this->get_logger(), "Baud rate cannot be over %d",
+                   std::numeric_limits<uint32_t>::max());
+      throw std::runtime_error("");
+    }
+    uint32_t serial_baudrate = static_cast<uint32_t>(baudrate);
+    std::string flow_control =
+        this->declare_parameter<std::string>("serial.flow_control");
+    std::string parity = this->declare_parameter<std::string>("serial.parity");
+    std::string stop_bits =
+        this->declare_parameter<std::string>("serial.stop_bits");
   } else if (connection_type_ == "udp") {
-    RCLCPP_ERROR(this->get_logger(), "Unsupported for now connection type: %s", connection_type_.c_str());
-    throw std::runtime_error("Unsupported for now connection type");
+    RCLCPP_FATAL(this->get_logger(), "Unsupported for now connection type: %s",
+                 connection_type_.c_str());
+    throw std::runtime_error("");
     ip_addr_ = this->declare_parameter<std::string>("udp.ip");
     ip_port_ = this->declare_parameter<uint16_t>("udp.port");
   } else if (connection_type_ == "tcp") {
-    RCLCPP_ERROR(this->get_logger(), "Unsupported for now connection type: %s", connection_type_.c_str());
-    throw std::runtime_error("Unsupported for now connection type");
+    RCLCPP_FATAL(this->get_logger(), "Unsupported for now connection type: %s",
+                 connection_type_.c_str());
+    throw std::runtime_error("");
     ip_addr_ = this->declare_parameter<std::string>("tcp.ip");
     ip_port_ = this->declare_parameter<uint16_t>("tcp.port");
   } else {
-    RCLCPP_ERROR(this->get_logger(), "Unsupported connection type: %s", connection_type_.c_str());
-    throw std::runtime_error("Unsupported connection type");
+    RCLCPP_FATAL(this->get_logger(), "Unsupported connection type: %s",
+                 connection_type_.c_str());
+    throw std::runtime_error("");
   }
 
   pose_publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(

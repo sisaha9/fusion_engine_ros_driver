@@ -6,8 +6,8 @@
 #ifndef FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
 #define FUSION_ENGINE_ROS_DRIVER__FUSION_ENGINE_ROS_DRIVER_NODE_HPP_
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
@@ -102,33 +102,13 @@ class FusionEngineRosDriverNode : public rclcpp::Node {
    * 
    */
   std::string frame_id_{""};
-  
+
   /**
    * @brief How we are connecting to a Fusion Engine Device
    * 
    * Can take values of  and serial
   */
   std::string connection_type_{"none"};
-
-  /**
-   * @brief IP address of UDP or TCP connection
-  */
-  std::string ip_addr_{"none"};
-
-  /**
-   * @brief Port we are communicating over in IP address
-  */
-  uint16_t ip_port_{0};
-
-  /**
-   * @brief Port we are communicating over on serial
-  */
-  std::string serial_port_{"none"};
-
-  /**
-   * @brief Baudrate at which we are communicating with serial device
-   */
-  uint32_t serial_baudrate_{0};
 
   /**
    * @brief Pointer to Fusion Engine Framer object
